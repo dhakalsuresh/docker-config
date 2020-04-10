@@ -1,22 +1,31 @@
-version: '2'
+version: "3"
 
 services:
   web:
     build:
-      context: ./
-      dockerfile: web.docker
+      context: ./docker/nginx
+      dockerfile: Dockerfile
     volumes:
       - ./:/var/www/html
-    container_name: web_project
+    container_name: nginx
     ports:
-      - "8082:80"
+      - "82:80"
     links:
       - app
+    networks:
+      - app-network
   app:
     build:
-      context: ./
-      dockerfile: app.docker
+      context: ./docker/php-fpm
+      dockerfile: Dockerfile
     volumes:
       - ./:/var/www/html
-    container_name: app_project
+    container_name: php-fpm
+    ports:
+      - 9000:9000
+    networks:
+      - app-network
 
+networks:
+  app-network:
+    driver: bridge
